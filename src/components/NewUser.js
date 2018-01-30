@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 //import axios
-import axios from 'axios'
+import axios from 'axios';
 
 class NewUser extends Component{
     constructor(){
@@ -14,13 +14,39 @@ class NewUser extends Component{
     }
     
     // insert addUser
-
+    addUser() {
+        axios
+            .post('/api/users/', this.state)
+            .then(response => {
+                console.log(response.data)
+                let user = response.data;
+                this.props.history.push(`/user/${user.id}`);
+            })
+            .catch(console.log);
+    }
 
     // insert updateUser    
-
+    updateUser() {
+        let id = this.props.match.params.id;
+        axios
+            .put(`/api/users/${id}`, this.state)
+            .then(response => {
+                console.log("response.data")
+                let user = response.data;
+                this.props.history.push(`/user/${user.id}`);
+            })
+            .catch(console.log);
+    }
 
     // insert deleteUser
-
+    deleteUser() {
+        let id = this.props.match.params.id;
+        console.log("HIH");
+        axios
+            .delete(`/api/user/${id}`)
+            .then(this.props.history.push('/search'))
+            .catch(console.log)
+    }
 
     render(){
         return(
@@ -52,7 +78,8 @@ class NewUser extends Component{
                         this.state.id >= 0
                         ?
                         <span>
-                            <button className='delete-button'>Delete User</button>
+                            {/* Not sure what happened here, but the delete button was calling the updateUser function rather than the deleteUser function. */}
+                            <button className='delete-button' onClick={() => this.deleteUser()}>Delete User</button>
                             <button type='submit'>Update</button>
                         </span>
                         :
